@@ -61,3 +61,56 @@ curl -X POST http://localhost:5000/api/upload \
 Actualmente, el proyecto cuenta con un solo controlador y no incluye estandar de respuestas, persistencia de datos ni autenticación.
 
 ---
+
+## Ejemplo de consumo en TypeScript
+
+```typescript
+
+    //Nuevo servicio para adjuntar archivos a los comentarios
+    private _postFiles(files: File[], urlCarpeta: string) {
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append('files', file);
+        }
+        //configurar headers
+        let headers = new HttpHeaders(
+            {
+                "urlCarpeta": urlCarpeta
+            }
+        )
+        //consumo de api
+        return this._http.post(`${this._urlBase}Files`, formData, { headers: headers });
+    }
+```
+
+## Ejemplo de consumo en Dart
+
+```dart
+  Future<bool> posFilesComent(
+    List<File> files,
+    String urlCarpeta,
+  ) async {
+    Uri url = Uri.parse("${_baseUrl}Files");
+      var request = http.MultipartRequest('POST', url);
+
+      // Agregar encabezados a la solicitud
+      request.headers.addAll({
+        'Content-Type': 'multipart/form-data',
+        "urlCarpeta": urlCarpeta
+      });
+
+      // Agregar archivos a la solicitud
+      for (var file in files) {
+        request.files.add(
+          await http.MultipartFile.fromPath('files', file.path),
+        );
+      }
+
+      var response = await request.send();
+
+        return response;
+    
+   
+  }
+
+```
